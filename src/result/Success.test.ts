@@ -57,6 +57,34 @@ describe('Success', () => {
     });
   });
 
+  describe('match', () => {
+    it('must call onSuccess with the value and return its result directly', () => {
+      const matched = Symbol('matched');
+      const onSuccess = vi.fn(() => matched);
+      const onFailure = vi.fn();
+
+      const result = new Success(value).match({ onSuccess, onFailure });
+
+      expect(onSuccess).toHaveBeenCalledOnce();
+      expect(onSuccess).toHaveBeenCalledWith(value);
+      expect(onFailure).not.toHaveBeenCalled();
+      expect(result).toBe(matched);
+    });
+
+    it('must call onSuccess when matched through the wider Result contract', () => {
+      const matched = Symbol('matched');
+      const result: Result<symbol, symbol> = new Success(value);
+      const onSuccess = vi.fn(() => matched);
+      const onFailure = vi.fn(() => Symbol('unexpected'));
+
+      const outcome = result.match({ onSuccess, onFailure });
+
+      expect(onSuccess).toHaveBeenCalledWith(value);
+      expect(onFailure).not.toHaveBeenCalled();
+      expect(outcome).toBe(matched);
+    });
+  });
+
   describe('orElse', () => {
     it('must return itself unchanged', () => {
       const success = new Success(value);

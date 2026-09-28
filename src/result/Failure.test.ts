@@ -57,6 +57,34 @@ describe('Failure', () => {
     });
   });
 
+  describe('match', () => {
+    it('must call onFailure with the error and return its result directly', () => {
+      const matched = Symbol('matched');
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn(() => matched);
+
+      const result = new Failure(error).match({ onSuccess, onFailure });
+
+      expect(onFailure).toHaveBeenCalledOnce();
+      expect(onFailure).toHaveBeenCalledWith(error);
+      expect(onSuccess).not.toHaveBeenCalled();
+      expect(result).toBe(matched);
+    });
+
+    it('must call onFailure when matched through the wider Result contract', () => {
+      const matched = Symbol('matched');
+      const result: Result<symbol, symbol> = new Failure(error);
+      const onSuccess = vi.fn(() => Symbol('unexpected'));
+      const onFailure = vi.fn(() => matched);
+
+      const outcome = result.match({ onSuccess, onFailure });
+
+      expect(onFailure).toHaveBeenCalledWith(error);
+      expect(onSuccess).not.toHaveBeenCalled();
+      expect(outcome).toBe(matched);
+    });
+  });
+
   describe('orElse', () => {
     it('must call the fallback with the error and return its result directly', () => {
       const returned = new Success(Symbol('value'));

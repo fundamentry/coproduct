@@ -28,6 +28,15 @@ export class Left<out L> {
     return this;
   }
 
+  match<T>({
+    onLeft,
+  }: {
+    onLeft: (value: L) => T;
+    onRight: (value: never) => void;
+  }): T {
+    return onLeft(this.#value);
+  }
+
   swap(): Right<L> {
     return new Right(this.#value);
   }

@@ -24,6 +24,15 @@ export class Failure<out E> {
     return this;
   }
 
+  match<T>({
+    onFailure,
+  }: {
+    onSuccess: (value: never) => void;
+    onFailure: (error: E) => T;
+  }): T {
+    return onFailure(this.#error);
+  }
+
   orElse<T, F>(fallback: (error: E) => Result<T, F>): Result<T, F> {
     return fallback(this.#error);
   }

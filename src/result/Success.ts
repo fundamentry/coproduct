@@ -23,6 +23,15 @@ export class Success<out V> {
     return new Success(project(this.#value));
   }
 
+  match<T>({
+    onSuccess,
+  }: {
+    onSuccess: (value: V) => T;
+    onFailure: (error: never) => void;
+  }): T {
+    return onSuccess(this.#value);
+  }
+
   orElse(_: (error: never) => void): this {
     return this;
   }

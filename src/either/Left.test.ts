@@ -68,6 +68,34 @@ describe('Left', () => {
     });
   });
 
+  describe('match', () => {
+    it('must call onLeft with the value and return its result directly', () => {
+      const matched = Symbol('matched');
+      const onLeft = vi.fn(() => matched);
+      const onRight = vi.fn();
+
+      const result = new Left(value).match({ onLeft, onRight });
+
+      expect(onLeft).toHaveBeenCalledOnce();
+      expect(onLeft).toHaveBeenCalledWith(value);
+      expect(onRight).not.toHaveBeenCalled();
+      expect(result).toBe(matched);
+    });
+
+    it('must call onLeft when matched through the wider Either contract', () => {
+      const matched = Symbol('matched');
+      const either: Either<symbol, symbol> = new Left(value);
+      const onLeft = vi.fn(() => matched);
+      const onRight = vi.fn(() => Symbol('unexpected'));
+
+      const outcome = either.match({ onLeft, onRight });
+
+      expect(onLeft).toHaveBeenCalledWith(value);
+      expect(onRight).not.toHaveBeenCalled();
+      expect(outcome).toBe(matched);
+    });
+  });
+
   describe('swap', () => {
     it('must return a new Right holding the value', () => {
       const left = new Left(value);
