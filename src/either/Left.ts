@@ -37,6 +37,10 @@ export class Left<out L> {
     return onLeft(this.#value);
   }
 
+  merge(): L {
+    return this.#value;
+  }
+
   swap(): Right<L> {
     return new Right(this.#value);
   }

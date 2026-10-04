@@ -96,6 +96,18 @@ describe('Left', () => {
     });
   });
 
+  describe('merge', () => {
+    it('must return the value passed to the constructor', () => {
+      expect(new Left(value).merge()).toBe(value);
+    });
+
+    it('must return the value when merged through the wider Either contract', () => {
+      const either: Either<symbol, symbol> = new Left(value);
+
+      expect(either.merge()).toBe(value);
+    });
+  });
+
   describe('swap', () => {
     it('must return a new Right holding the value', () => {
       const left = new Left(value);
