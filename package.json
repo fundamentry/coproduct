@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@fundamentry/coproduct",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "description": "A toolkit for common coproduct types.",
   "repository": {

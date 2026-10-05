@@ -1,3 +1,9 @@
+## 1.2.1
+
+### 🩹 Fixes
+
+- upgrade '@fundamentry/trait' to 3.1.0 ([7a3e6c0](https://github.com/fundamentry/coproduct/commit/7a3e6c0))
+
 ## 1.2.0
 
 ### 🚀 Features
