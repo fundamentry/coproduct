@@ -1,11 +1,24 @@
+import { Equatable, type Stringable } from '@fundamentry/trait';
+
 // fallow-ignore-next-line circular-dependency -- used at call time only
 import { Left } from './Left.js';
 
-export class Right<out R> {
+export class Right<out R> implements Equatable, Stringable {
   readonly #value: R;
 
   constructor(value: R) {
     this.#value = value;
+  }
+
+  [Equatable.symbol](other: unknown): boolean {
+    return (
+      other instanceof Right &&
+      Equatable.equals<unknown>(this.#value, other.#value)
+    );
+  }
+
+  [Symbol.toPrimitive](): string {
+    return String(this.#value);
   }
 
   isLeft(): this is Left<never> {

@@ -59,6 +59,9 @@
     "test:watch": "vitest",
     "typecheck": "tsc"
   },
+  "dependencies": {
+    "@fundamentry/trait": "catalog:"
+  },
   "devDependencies": {
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",

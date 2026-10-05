@@ -1,11 +1,84 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import { Equatable } from '@fundamentry/trait';
+
 import { type Either } from './Either.js';
 import { Left } from './Left.js';
 import { Right } from './Right.js';
 
 describe('Right', () => {
   const value = Symbol('value');
+
+  describe('[Equatable.symbol]', () => {
+    it('must make Right Equatable', () => {
+      expect(Equatable.is(new Right(value))).toBe(true);
+    });
+
+    it('must return true for a Right holding the same value', () => {
+      expect(Equatable.equals(new Right(value), new Right(value))).toBe(true);
+    });
+
+    it('must return false for a Right holding a different value', () => {
+      expect(
+        Equatable.equals<unknown>(new Right(value), new Right(Symbol('other')))
+      ).toBe(false);
+    });
+
+    it('must return false for a Left holding the same value', () => {
+      expect(new Right(value)[Equatable.symbol](new Left(value))).toBe(false);
+    });
+
+    it('must return false for anything that is not a Right', () => {
+      expect(new Right(value)[Equatable.symbol](value)).toBe(false);
+      expect(new Right(value)[Equatable.symbol](null)).toBe(false);
+    });
+
+    it('must compare plain objects by reference', () => {
+      const object = {};
+
+      expect(Equatable.equals(new Right(object), new Right(object))).toBe(true);
+      expect(Equatable.equals(new Right({}), new Right({}))).toBe(false);
+    });
+
+    it('must delegate to the value when it is Equatable', () => {
+      const equals = vi.fn(() => true);
+      const other = Symbol('other');
+
+      const outcome = Equatable.equals<unknown>(
+        new Right({ [Equatable.symbol]: equals }),
+        new Right(other)
+      );
+
+      expect(equals).toHaveBeenCalledOnce();
+      expect(equals).toHaveBeenCalledWith(other);
+      expect(outcome).toBe(true);
+    });
+
+    it('must compare nested Eithers by value', () => {
+      expect(
+        Equatable.equals(new Right(new Right(1)), new Right(new Right(1)))
+      ).toBe(true);
+      expect(
+        Equatable.equals(new Right(new Right(1)), new Right(new Right(2)))
+      ).toBe(false);
+    });
+  });
+
+  describe('[Symbol.toPrimitive]', () => {
+    it('must return the string form of the value', () => {
+      expect(new Right(value)[Symbol.toPrimitive]()).toBe('Symbol(value)');
+    });
+
+    it('must use the string form of a Stringable value', () => {
+      expect(new Right(new Left(42))[Symbol.toPrimitive]()).toBe('42');
+    });
+
+    it('must be used when converted to a string', () => {
+      const stringable: unknown = new Right(42);
+
+      expect(String(stringable)).toBe('42');
+    });
+  });
 
   describe('isLeft', () => {
     it('must return false', () => {
