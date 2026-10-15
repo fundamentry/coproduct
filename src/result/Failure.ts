@@ -24,6 +24,10 @@ export class Failure<out E> {
     return this;
   }
 
+  mapError<F>(project: (error: E) => F): Failure<F> {
+    return new Failure(project(this.#error));
+  }
+
   match<T>({
     onFailure,
   }: {

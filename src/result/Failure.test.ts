@@ -57,6 +57,30 @@ describe('Failure', () => {
     });
   });
 
+  describe('mapError', () => {
+    it('must call the project with the error and wrap the result in a new Failure', () => {
+      const mapped = Symbol('mapped');
+      const project = vi.fn(() => mapped);
+      const failure = new Failure(error);
+
+      const result = failure.mapError(project);
+
+      expect(project).toHaveBeenCalledOnce();
+      expect(project).toHaveBeenCalledWith(error);
+      expect(result).toBeInstanceOf(Failure);
+      expect(result).not.toBe(failure);
+      expect(result.error()).toBe(mapped);
+    });
+
+    it('must leave the original Failure unchanged', () => {
+      const failure = new Failure(error);
+
+      failure.mapError(() => Symbol('mapped'));
+
+      expect(failure.error()).toBe(error);
+    });
+  });
+
   describe('match', () => {
     it('must call onFailure with the error and return its result directly', () => {
       const matched = Symbol('matched');

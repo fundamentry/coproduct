@@ -23,6 +23,10 @@ export class Success<out V> {
     return new Success(project(this.#value));
   }
 
+  mapError(_: (error: never) => void): this {
+    return this;
+  }
+
   match<T>({
     onSuccess,
   }: {

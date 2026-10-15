@@ -57,6 +57,25 @@ describe('Success', () => {
     });
   });
 
+  describe('mapError', () => {
+    it('must return itself unchanged', () => {
+      const success = new Success(value);
+
+      expect(success.mapError(vi.fn())).toBe(success);
+    });
+
+    it('must not call a project passed through the wider Result contract', () => {
+      const success = new Success(value);
+      const result: Result<symbol, symbol> = success;
+      const project = vi.fn(() => Symbol('mapped'));
+
+      const outcome = result.mapError(project);
+
+      expect(project).not.toHaveBeenCalled();
+      expect(outcome).toBe(success);
+    });
+  });
+
   describe('match', () => {
     it('must call onSuccess with the value and return its result directly', () => {
       const matched = Symbol('matched');
