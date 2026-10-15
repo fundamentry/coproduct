@@ -33,6 +33,29 @@ describe('Success', () => {
     });
   });
 
+  describe('getOrThrow', () => {
+    it('must return the value without calling the exception', () => {
+      const exception = vi.fn(() => new Error('unexpected'));
+
+      const result = new Success(value).getOrThrow(exception);
+
+      expect(exception).not.toHaveBeenCalled();
+      expect(result).toBe(value);
+    });
+
+    it('must return the value when called through the wider Result contract', () => {
+      const result: Result<symbol, symbol> = new Success(value);
+      const exception = vi.fn(
+        (cause: symbol) => new Error('unexpected', { cause })
+      );
+
+      const outcome: symbol = result.getOrThrow(exception);
+
+      expect(exception).not.toHaveBeenCalled();
+      expect(outcome).toBe(value);
+    });
+  });
+
   describe('map', () => {
     it('must call the project with the value and wrap the result in a new Success', () => {
       const mapped = Symbol('mapped');

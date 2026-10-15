@@ -19,6 +19,10 @@ export class Success<out V> {
     return project(this.#value);
   }
 
+  getOrThrow(_: (error: never) => Error): V {
+    return this.#value;
+  }
+
   map<T>(project: (value: V) => T): Success<T> {
     return new Success(project(this.#value));
   }

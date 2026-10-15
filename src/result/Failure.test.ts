@@ -38,6 +38,25 @@ describe('Failure', () => {
     });
   });
 
+  describe('getOrThrow', () => {
+    it('must call the exception with the error and throw its result', () => {
+      const thrown = new RangeError('expected');
+      const exception = vi.fn(() => thrown);
+
+      expect(() => new Failure(error).getOrThrow(exception)).toThrow(thrown);
+      expect(exception).toHaveBeenCalledOnce();
+      expect(exception).toHaveBeenCalledWith(error);
+    });
+
+    it('must throw when called through the wider Result contract', () => {
+      const result: Result<symbol, symbol> = new Failure(error);
+
+      expect(() =>
+        result.getOrThrow(cause => new RangeError('expected', { cause }))
+      ).toThrow(expect.objectContaining({ cause: error }));
+    });
+  });
+
   describe('map', () => {
     it('must return itself unchanged', () => {
       const failure = new Failure(error);

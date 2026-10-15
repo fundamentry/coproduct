@@ -20,6 +20,10 @@ export class Failure<out E> {
     return this;
   }
 
+  getOrThrow(exception: (error: E) => Error): never {
+    throw exception(this.#error);
+  }
+
   map(_: (value: never) => void): this {
     return this;
   }
