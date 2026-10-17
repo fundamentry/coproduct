@@ -1,7 +1,9 @@
+import { Equatable } from '@fundamentry/trait';
+
 import { type Result } from './Result.js';
 import { type Success } from './Success.js';
 
-export class Failure<out E> {
+export class Failure<out E> implements Equatable {
   readonly #error: E;
 
   constructor(error: E) {
@@ -43,5 +45,12 @@ export class Failure<out E> {
 
   orElse<T, F>(fallback: (error: E) => Result<T, F>): Result<T, F> {
     return fallback(this.#error);
+  }
+
+  [Equatable.symbol](other: unknown): boolean {
+    return (
+      other instanceof Failure &&
+      Equatable.equals<unknown>(this.#error, other.#error)
+    );
   }
 }

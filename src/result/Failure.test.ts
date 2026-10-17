@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import { Equatable } from '@fundamentry/trait';
+
 import { Failure } from './Failure.js';
 import { type Result } from './Result.js';
 import { Success } from './Success.js';
@@ -139,6 +141,76 @@ describe('Failure', () => {
       expect(fallback).toHaveBeenCalledOnce();
       expect(fallback).toHaveBeenCalledWith(error);
       expect(result).toBe(returned);
+    });
+  });
+
+  describe('[Equatable.symbol]', () => {
+    it('must make Failure Equatable', () => {
+      expect(Equatable.is(new Failure(error))).toBe(true);
+    });
+
+    it('must return true for a Failure holding the same error', () => {
+      expect(Equatable.equals(new Failure(error), new Failure(error))).toBe(
+        true
+      );
+    });
+
+    it('must return false for a Failure holding a different error', () => {
+      expect(
+        Equatable.equals<unknown>(
+          new Failure(error),
+          new Failure(Symbol('other'))
+        )
+      ).toBe(false);
+    });
+
+    it('must return false for a Success holding the same value', () => {
+      expect(new Failure(error)[Equatable.symbol](new Success(error))).toBe(
+        false
+      );
+    });
+
+    it('must return false for anything that is not a Failure', () => {
+      expect(new Failure(error)[Equatable.symbol](error)).toBe(false);
+      expect(new Failure(error)[Equatable.symbol](null)).toBe(false);
+    });
+
+    it('must compare plain objects by reference', () => {
+      const object = {};
+
+      expect(Equatable.equals(new Failure(object), new Failure(object))).toBe(
+        true
+      );
+      expect(Equatable.equals(new Failure({}), new Failure({}))).toBe(false);
+    });
+
+    it('must delegate to the error when it is Equatable', () => {
+      const equals = vi.fn(() => true);
+      const other = Symbol('other');
+
+      const outcome = Equatable.equals<unknown>(
+        new Failure({ [Equatable.symbol]: equals }),
+        new Failure(other)
+      );
+
+      expect(equals).toHaveBeenCalledOnce();
+      expect(equals).toHaveBeenCalledWith(other);
+      expect(outcome).toBe(true);
+    });
+
+    it('must compare nested Results by value', () => {
+      expect(
+        Equatable.equals(
+          new Failure(new Failure(1)),
+          new Failure(new Failure(1))
+        )
+      ).toBe(true);
+      expect(
+        Equatable.equals(
+          new Failure(new Failure(1)),
+          new Failure(new Failure(2))
+        )
+      ).toBe(false);
     });
   });
 });

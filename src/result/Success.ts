@@ -1,6 +1,8 @@
+import { Equatable } from '@fundamentry/trait';
+
 import { type Result } from './Result.js';
 
-export class Success<out V> {
+export class Success<out V> implements Equatable {
   readonly #value: V;
 
   constructor(value: V) {
@@ -42,5 +44,12 @@ export class Success<out V> {
 
   orElse(_: (error: never) => void): this {
     return this;
+  }
+
+  [Equatable.symbol](other: unknown): boolean {
+    return (
+      other instanceof Success &&
+      Equatable.equals<unknown>(this.#value, other.#value)
+    );
   }
 }
