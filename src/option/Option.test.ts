@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import { Absent } from './Absent.js';
 import { Option } from './Option.js';
@@ -33,6 +33,41 @@ describe('Option', () => {
 
       expect(result).toBeInstanceOf(Present);
       expect(result.present() && result.value()).toBe(value);
+    });
+  });
+
+  describe('filter', () => {
+    interface Circle {
+      kind: 'circle';
+      radius: number;
+    }
+
+    interface Square {
+      kind: 'square';
+      side: number;
+    }
+
+    type Shape = Circle | Square;
+
+    const option: Option<Shape> = Option.from<Shape>({
+      kind: 'circle',
+      radius: 1,
+    });
+
+    it('must narrow the value type with a type guard', () => {
+      const result = option.filter(
+        (shape): shape is Circle => shape.kind === 'circle'
+      );
+
+      expectTypeOf(result).toEqualTypeOf<Option<Circle>>();
+    });
+
+    it('must keep the value type with a boolean predicate', () => {
+      const predicate = (shape: Shape): boolean => shape.kind === 'circle';
+
+      const result = option.filter(predicate);
+
+      expectTypeOf(result).toEqualTypeOf<Option<Shape>>();
     });
   });
 });

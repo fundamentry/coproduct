@@ -20,9 +20,9 @@ export class Present<out V> implements Equatable {
     return this.#value;
   }
 
-  filter<T extends V>(predicate: (value: V) => value is T): Option<T>;
-
-  filter(predicate: (value: V) => boolean): Option<V>;
+  filter<P extends (value: V) => boolean>(
+    predicate: P
+  ): Option<P extends ((value: V) => value is infer T extends V) ? T : V>;
 
   filter(predicate: (value: V) => boolean): Option<V> {
     return predicate(this.#value) ? this : new Absent();
