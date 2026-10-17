@@ -1,3 +1,13 @@
+## 1.4.0
+
+### 🚀 Features
+
+- add 'all' to 'Option' ([d14ef75](https://github.com/fundamentry/coproduct/commit/d14ef75))
+
+### 🩹 Fixes
+
+- narrow 'filter' with a type guard on 'Option' ([6c9acfe](https://github.com/fundamentry/coproduct/commit/6c9acfe))
+
 ## 1.3.0
 
 ### 🚀 Features
