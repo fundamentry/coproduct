@@ -33,6 +33,12 @@
         ]
       },
       {
+        "name": "option",
+        "patterns": [
+          "src/option/**"
+        ]
+      },
+      {
         "name": "result",
         "patterns": [
           "src/result/**"
@@ -43,6 +49,12 @@
       {
         "from": "either",
         "allow": []
+      },
+      {
+        "from": "option",
+        "allow": [
+          "result"
+        ]
       },
       {
         "from": "result",
