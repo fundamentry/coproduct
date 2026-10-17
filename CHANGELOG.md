@@ -1,3 +1,12 @@
+## 1.3.0
+
+### 🚀 Features
+
+- add 'mapError' to 'Result' ([0bec181](https://github.com/fundamentry/coproduct/commit/0bec181))
+- add 'getOrThrow' to 'Result' ([30c394a](https://github.com/fundamentry/coproduct/commit/30c394a))
+- implement 'Equatable' on 'Result' ([dbe5a58](https://github.com/fundamentry/coproduct/commit/dbe5a58))
+- add 'Option' ([be56665](https://github.com/fundamentry/coproduct/commit/be56665))
+
 ## 1.2.1
 
 ### 🩹 Fixes
