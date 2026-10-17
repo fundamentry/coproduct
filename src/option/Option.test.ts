@@ -36,6 +36,49 @@ describe('Option', () => {
     });
   });
 
+  describe('all', () => {
+    it('must return a Present holding every value in order', () => {
+      const first = Symbol('first');
+      const second = Symbol('second');
+
+      const result = Option.all([new Present(first), new Present(second)]);
+
+      expect(result.present() && result.value()).toStrictEqual([first, second]);
+    });
+
+    it('must return a Present holding an empty array for no options', () => {
+      const result = Option.all([]);
+
+      expect(result.present() && result.value()).toStrictEqual([]);
+    });
+
+    it('must return an Absent when any option is absent', () => {
+      const result = Option.all([
+        new Present(Symbol('first')),
+        new Absent(),
+        new Present(Symbol('third')),
+      ]);
+
+      expect(result).toBeInstanceOf(Absent);
+    });
+
+    it('must preserve the element types of a tuple', () => {
+      const result = Option.all([
+        Option.from<number>(1),
+        Option.from<string>('text'),
+        new Present(true),
+      ]);
+
+      expectTypeOf(result).toEqualTypeOf<Option<[number, string, boolean]>>();
+    });
+
+    it('must return an Option of an array for an array of options', () => {
+      const options: readonly Option<number>[] = [new Present(1)];
+
+      expectTypeOf(Option.all(options)).toEqualTypeOf<Option<number[]>>();
+    });
+  });
+
   describe('filter', () => {
     interface Circle {
       kind: 'circle';
